@@ -1,13 +1,12 @@
 package pl.sda;
 
+import jdk.nashorn.internal.runtime.ListAdapter;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author pmatusiak
@@ -78,23 +77,24 @@ public class Parser {
         return realEstateList;
     }
 
-    public void groupByCity(List<RealEstate> realEstates) {
+    public Map<String, List<RealEstate>> groupByCity(List<RealEstate> realEstates) {
         //Map<String, List<RealEstate>>
         //klucz to miasto, a lista wartości to nieruchomości w mieście
 
         Map<String, List<RealEstate>> map = new HashMap<>();
 
         for (RealEstate estate : realEstates) {
-            map.put(estate.getCity(), Arrays.asList(estate));
+            String key = estate.getCity();
+            if (map.containsKey(key)) {
+                List<RealEstate> lista = map.get(key);
+                lista.add(estate);
+                map.put(key, lista);
+            } else {
+                List<RealEstate> lista = new ArrayList<>();
+                lista.add(estate);
+                map.put(key,lista);
+            }
         }
-
-
-
-        //iterować po realEstates
-        //klucz - city
-        //sprawdzam, czy klucz jest w mapie
-
-        //List<RealEstate> lista = map.get("warszawa");
-        //lista
+        return map;
     }
 }
